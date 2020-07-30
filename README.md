@@ -1,5 +1,5 @@
 ![logo](https://raw.githubusercontent.com/OptimisticSide/Axon/master/assets/logo.png)
-<h1 align="center">The framework for you.</h1>
+<div align="center">The framework for you.</div>
 
 
 ## About
@@ -42,7 +42,6 @@ return Module
 Here is an example module I made for printing things.
 ```lua
 -- Debugger module
-
 local Debugger = {}
 
 function Debugger.print(...)
