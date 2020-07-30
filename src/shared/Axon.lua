@@ -30,6 +30,10 @@ Axon.directories = {
     Searches a folder for a module by it's given path or name
 ]]
 function Axon.findModule(folder, name)
+    if typeof(name) == "Instance" then
+        return name
+    end
+
     local path = string.split(name, "/")
 
     for _, category in ipairs(folder:GetChildren()) do
@@ -37,6 +41,12 @@ function Axon.findModule(folder, name)
         if pathObject then
             for _, pathElement in ipairs({select(2, unpack(path))}) do
                 pathObject = pathObject:WaitForChild(pathElement)
+            end
+
+            local valueInstances = {"StringValue", "NumberValue", "IntValue", "ObjectValue"}
+            if typeof(pathObject) and table.find(valueInstances, pathObject.ClassName) then
+                pathObject = pathObject.Value
+                pathObject = tonumber(pathObject) or pathObject
             end
 
             return pathObject
@@ -62,6 +72,8 @@ end
     Sets up the module with core indexes, and initiates it
 ]]
 function Axon.setupModule(module)
+    module = Axon.requireModule(module)
+
     if typeof(module) == "table" then
         module.__index = module
         module.__axon = true
