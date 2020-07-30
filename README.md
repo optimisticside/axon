@@ -1,5 +1,5 @@
 ![logo](https://raw.githubusercontent.com/OptimisticSide/Axon/master/assets/logo.png)
-<center>The framework for you.</center>
+<h1 align="center">The framework for you.</h1>
 
 
 ## About
