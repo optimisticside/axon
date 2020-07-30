@@ -2,7 +2,7 @@
 <center>The framework for you.</center>
 
 
-#About
+## About
 Axon is a lightweight, flexible framework intended to accelerate development on the ROBLOX platform. With full support for both functional and object-oriented programming paradigms, you have full control on how you shape your game. 
 
 ## Layout
