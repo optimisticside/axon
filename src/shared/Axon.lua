@@ -8,6 +8,7 @@
 local SERVICE_DRIVEN = false -- Whether or not you prefer to call your modules "Services" and store them in different folders
 local BLOCK_REQUIRE = false -- Whether or not modules will NOT be required
 local PROTECT_REQUIRES = true -- Whether or not modules will be required in a protected call (AKA pcall)
+local INJECT_ENVIRONMENT = false -- Whether or not the modules will be injected into the script's environment (allowing for a python-like import statement)
 
 -- Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -30,7 +31,7 @@ Axon.directories = {
     Searches a folder for a module by it's given path or name
 ]]
 function Axon.findModule(folder, name)
-    if typeof(name) == "Instance" then
+    if typeof(name) == "Instance" or typeof(name) == "number" then
         return name
     end
 
@@ -75,12 +76,9 @@ function Axon.setupModule(module)
     module = Axon.requireModule(module)
 
     if typeof(module) == "table" then
-        module.__index = module
-        module.__axon = true
-
-        if module.__init then
+        --[[if module.__init then
             module.__init(module, Axon)
-        end
+        end]]
 
         module = setmetatable({}, module)
     end
@@ -121,6 +119,61 @@ function Axon.getModule(moduleName)
 end
 
 --[[
+    importToStackLevel(stackLevel: number, modules: tuple/table/string) -> module(s): any
+    Main interface function for importing modules or services
+]]
+function Axon.importToStackLevel(stackLevel, ...)
+    local toImport = {}
+    local importTable
+
+    function importTable(array)
+        for _, element in ipairs(array) do
+            if typeof(element) == "table" then
+                importTable(element)
+            else
+                toImport[#toImport+1] = element
+            end
+        end
+    end
+    
+    importTable({...})
+
+    local modules = {}
+    local indexArray = {}
+    for index, moduleName in ipairs(toImport) do
+        local module = Axon.getModule(moduleName)
+        if module then
+            indexArray[index] = moduleName
+            modules[moduleName] = module
+        end
+    end
+
+    if INJECT_ENVIRONMENT then
+        local environment = getfenv(stackLevel)
+
+        for name, module in pairs(modules) do
+            print(name, module)
+            environment[name] = module
+        end
+    end
+
+    local toReturn = {}
+    for index, moduleName in ipairs(indexArray) do
+        toReturn[index] = modules[moduleName]
+    end
+
+    return unpack(toReturn)
+end
+
+--[[
+    import(modules: tuple/table/string) -> module(s): tuple
+    Interface for the import function
+]]
+function Axon.import(...)
+    return Axon.importToStackLevel(3, ...)
+end
+
+--[[
     init(void) -> void
     Initializes the module by implementing the constants
 ]]
@@ -151,6 +204,6 @@ Axon.init()
 
 return setmetatable(Axon, {
     __call = function(_, moduleName)
-        return Axon.getModule(moduleName)
+        return Axon.importToStackLevel(3, moduleName)
     end;
 })
