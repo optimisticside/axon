@@ -5,12 +5,22 @@
 
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
-      "$path": "src/shared"
+      
+      "Axon": {
+        "$path": "src/shared/Axon.lua"
+      },
+      "SharedModules": {
+        "$path": "src/shared/modules"
+      }
     },
 
     "ServerStorage": {
       "$className": "ServerStorage",
-      "$path": "src/server"
+      "$path": "src/server",
+
+      "ServerModules": {
+        "$path": "src/server/modules"
+      }
     }
   }
 }
