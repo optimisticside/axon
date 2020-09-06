@@ -203,7 +203,7 @@ end
 Axon.init()
 
 return setmetatable(Axon, {
-    __call = function(_, moduleName)
-        return Axon.importToStackLevel(3, moduleName)
+    __call = function(_, ...)
+        return Axon.importToStackLevel(3, ...)
     end;
 })
