@@ -152,7 +152,6 @@ function Axon.importToStackLevel(stackLevel, ...)
         local environment = getfenv(stackLevel)
 
         for name, module in pairs(modules) do
-            print(name, module)
             environment[name] = module
         end
     end
