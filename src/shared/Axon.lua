@@ -5,7 +5,6 @@
 -- | Variables |
 
 -- Constants
-local SERVICE_DRIVEN = false -- Whether or not you prefer to call your modules "Services" and store them in different folders
 local BLOCK_REQUIRE = false -- Whether or not modules will NOT be required
 local PROTECT_REQUIRES = true -- Whether or not modules will be required in a protected call (AKA pcall)
 local INJECT_ENVIRONMENT = false -- Whether or not the modules will be injected into the script's environment (allowing for a python-like import statement)
@@ -20,8 +19,8 @@ local pcall = pcall
 -- Module
 local Axon = {}
 Axon.directories = {
-    shared = "SharedModules";
-    server = "ServerModules";
+    shared = "SharedModules"; -- Change this to the folder in ReplicatedStorage to store shared modules
+    server = "ServerModules"; -- Change this to the folder in ServerStorage to store server modules
 }
 
 -- | Functions |
@@ -177,11 +176,6 @@ end
     Initializes the module by implementing the constants
 ]]
 function Axon.init()
-    if SERVICE_DRIVEN then
-        Axon.directories.shared = "SharedServices"
-        Axon.directories.server = "ServerServices"
-    end
-
     if not PROTECT_REQUIRES then
         pcall = function(func, ...)
             func(...)
