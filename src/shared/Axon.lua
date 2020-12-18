@@ -26,6 +26,19 @@ Axon.directories = {
 -- | Functions |
 
 --[[
+    getCallingScript(void) -> script:Intance
+    Searches the stack for the script that wants to import
+]]
+function Axon.getCallingScript()
+    for i = 1, 10 do
+        local environment = getfenv(i)
+        if environment and environment.script ~= script then
+            return environment.script
+        end
+    end
+end
+
+--[[
     findModule(folder: Instance, name: string) -> module: Instance
     Searches a folder for a module by it's given path or name
 ]]
@@ -37,10 +50,33 @@ function Axon.findModule(folder, name)
     local path = string.split(name, "/")
 
     for _, category in ipairs(folder:GetChildren()) do
-        local pathObject = category:FindFirstChild(path[1])
+        local pathObject
+
+        local start = string.split(path[1], ".")
+        if #start > 0 then
+            table.remove(start, 1)
+
+            for _, part in ipairs(start) do
+                if part == "" then
+                    pathObject = pathObject or Axon.getCallingScript()
+                    pathObject = pathObject.Parent
+                end
+            end
+        end
+
+        if path[1] == "" then
+            pathObject = Axon.getCallingScript()
+        end
+
+        pathObject = pathObject or category:FindFirstChild(path[1])
+
         if pathObject then
             for _, pathElement in ipairs({select(2, unpack(path))}) do
-                pathObject = pathObject:WaitForChild(pathElement)
+                if pathElement == "..." then
+                    pathObject = pathObject.Parent
+                else
+                    pathObject = pathObject:WaitForChild(pathElement)
+                end
             end
 
             local valueInstances = {"StringValue", "NumberValue", "IntValue", "ObjectValue"}
