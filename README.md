@@ -1,4 +1,4 @@
-![logo](https://raw.githubusercontent.com/OptimisticSide/Axon/master/assets/logo.png)
+<p align="center"><img src="https://raw.githubusercontent.com/OptimisticSide/axon/master/assets/logo.png" width="50%" height="50%"></p>
 <div align="center">The framework for you.</div>
 
 
